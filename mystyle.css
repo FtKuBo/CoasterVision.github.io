@@ -1,0 +1,64 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background-color: #f3f4f6;
+}
+
+h1 {
+    text-align: center;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 2.5em;
+    color: #333;
+    padding: 10px;
+}
+
+.action {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #4a90e2;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action h2 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 2em;
+}
+
+.choices {
+    display: flex;
+    gap: 15px;
+}
+
+.choices button {
+    padding: 10px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #fff;
+}
+
+.choices button:nth-child(1) { background-color: #4caf50; }
+.choices button:nth-child(2) { background-color: #f44336; }
+.choices button:nth-child(3) { background-color: #ff9800; }
+
+.choices button:hover {
+    opacity: 0.8;
+}
