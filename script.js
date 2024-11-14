@@ -35,7 +35,7 @@ async function connectToBluetoothDevice() {
         console.log('Connected to device:', device.name);
     } catch (error) {
         console.error('Error connecting to Bluetooth device:', error);
-        alert('Failed to connect. Please check if your Arduino is discoverable and try again.');
+        alert('Connection failed. Please ensure you are using Google Chrome, check that your Arduino is discoverable, and try again.');
     }
 }
 
