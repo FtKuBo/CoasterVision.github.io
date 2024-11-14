@@ -8,13 +8,25 @@
 </head>
 <body>
     <h1>Coaster Vision</h1>
+    
+    <div class="device">
+        <h2>Device</h2>
+        <div class="states">
+            <span id="stateConnected" style="display: none;">Connected</span>
+            <span id="stateDisconnected">Disconnected</span>
+        </div>
+        <button id="connectButton">Connect to Arduino</button>
+    </div>
+    
     <div class="action">
         <h2>Action</h2>
         <div class="choices">
-            <button>UP</button>
-            <button>DOWN</button>
-            <button>STOP</button>
+            <button id="upB">UP</button>
+            <button id="downB">DOWN</button>
+            <button id="stopB">STOP</button>
         </div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

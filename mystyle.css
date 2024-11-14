@@ -21,6 +21,63 @@ h1 {
     padding: 10px;
 }
 
+.device {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.device h2 {
+    font-size: 1.8em;
+    color: #4a90e2;
+    margin-bottom: 10px;
+}
+
+.states {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#stateConnected, #stateDisconnected {
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #fff;
+}
+
+#stateConnected {
+    background-color: #4caf50;
+}
+
+#stateDisconnected {
+    background-color: #f44336;
+}
+
+#stateConnected {
+    display: none;
+}
+
+#connectButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#connectButton:hover {
+    background-color: #357ab8;
+}
+
 .action {
     flex: 1;
     display: flex;
@@ -51,8 +108,8 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
     color: #fff;
+    transition: background-color 0.3s;
 }
 
 .choices button:nth-child(1) { background-color: #4caf50; }
