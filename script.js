@@ -27,6 +27,15 @@ upButton.addEventListener('click', () => writeOnCharacteristic(2));
 downButton.addEventListener('click', () => writeOnCharacteristic(1));
 stopButton.addEventListener('click', () => writeOnCharacteristic(0));
 
+function showPopup() {
+    const popup = document.getElementById("popup");
+    popup.classList.add("show"); // Add the "show" class to make it visible
+
+    setTimeout(() => {
+        popup.classList.remove("show"); // Remove the "show" class to fade it out
+    }, 500); // Display the popup for 1 second
+};
+
 function isWebBluetoothEnabled() {
     if (!navigator.bluetooth) {
         console.log('Web Bluetooth API is not available in this browser!');
@@ -62,6 +71,7 @@ function connectToDevice(){
         stateNotAvailable.style.display = "none";
         stateConnected.style.display = "block";
         stateDisconnected.style.display = "none";
+        showPopup();
     })
     .catch(error => {
         console.log('Error: ', error);
