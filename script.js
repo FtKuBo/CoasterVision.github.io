@@ -30,6 +30,7 @@ stopButton.addEventListener('click', () => writeOnCharacteristic(0));
 function isWebBluetoothEnabled() {
     if (!navigator.bluetooth) {
         console.log('Web Bluetooth API is not available in this browser!');
+        window.alert('Service not available in this browser! Ensure that you are using Google Chrome.')
         stateNotAvailable.style.display = "block";
         stateConnected.style.display = "none";
         stateDisconnected.style.display = "none";
@@ -47,9 +48,6 @@ function connectToDevice(){
     })
     .then(device => {
         console.log('Device Selected:', device.name);
-        stateNotAvailable.style.display = "none";
-        stateConnected.style.display = "block";
-        stateDisconnected.style.display = "none";
         device.addEventListener('gattservicedisconnected', onDisconnected);
         return device.gatt.connect();
     })
@@ -61,9 +59,13 @@ function connectToDevice(){
     .then(service => {
         bleServiceFound = service;
         console.log("Service discovered:", service);
+        stateNotAvailable.style.display = "none";
+        stateConnected.style.display = "block";
+        stateDisconnected.style.display = "none";
     })
     .catch(error => {
         console.log('Error: ', error);
+        window.alert("Connection Error: Ensure that you are using Google Chrome as your browser and that the Arduino device is properly connected and accessible.")
         stateNotAvailable.style.display = "none";
         stateConnected.style.display = "none";
         stateDisconnected.style.display = "block";
@@ -91,7 +93,8 @@ function writeOnCharacteristic(value){
             console.log("Value written to Motorcharacteristic:", value);
         })
         .catch(error => {
-            console.error("Error writing to the LED characteristic: ", error);
+            console.error("Error writing to the Motor characteristic: ", error);
+            window.alert('Connection Successful: The Arduino device has been connected successfully.')
         });
     } else {
         stateNotAvailable.style.display = "none";
