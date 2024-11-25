@@ -1,72 +1,125 @@
-// Connect to Bluetooth (make sure you have a Bluetooth-enabled computer)
 const connectButton = document.getElementById('connectButton');
+const disconnectButton = document.getElementById('disconnectButton');
 const upButton = document.getElementById('upB');
 const downButton = document.getElementById('downB');
 const stopButton = document.getElementById('stopB');
-
 const stateConnected = document.getElementById('stateConnected');
 const stateDisconnected = document.getElementById('stateDisconnected');
+const stateNotAvailable = document.getElementById('stateNotAvailable');
 
-// Bluetooth device variable
-let btDevice;
-let btSerialPort;
+//Define BLE Device Specs
+var deviceName ='ESP32';
+var bleService = '19b10000-e8f2-537e-4f6c-d104768a1214';
+var motorCharacteristic = '19b10002-e8f2-537e-4f6c-d104768a1214';
 
-connectButton.onclick = async function connectToBluetoothDevice() {
-  try {
-    // Request Bluetooth device
-    btDevice = await navigator.bluetooth.requestDevice({
-      filters: [{ name: 'HC-05' }],  // Match the name of the HC-05 Bluetooth device
-      acceptAllDevices: true,
-      optionalServices: ['00001101-0000-1000-8000-00805f9b34fb']  // Serial Port Profile UUID
-    });
+//Global Variables to Handle Bluetooth
+var bleServer;
+var bleServiceFound;
 
-    const server = await btDevice.gatt.connect();
-    console.log('Connected to device:', btDevice.name);
+connectButton.addEventListener('click', (event) => {
+    if (isWebBluetoothEnabled()){
+        connectToDevice();
+    }
+});
+disconnectButton.addEventListener('click', disconnectDevice);
 
-    stateConnected.style.display = 'inline';
-    stateDisconnected.style.display = 'none';
+upButton.addEventListener('click', () => writeOnCharacteristic(2));
+downButton.addEventListener('click', () => writeOnCharacteristic(1));
+stopButton.addEventListener('click', () => writeOnCharacteristic(0));
 
-    // Open Bluetooth Serial Port (using Web Bluetooth API, or Node.js serial API)
-    btSerialPort = await btDevice.gatt.getPrimaryService('00001101-0000-1000-8000-00805f9b34fb');
-    const characteristic = await btSerialPort.getCharacteristic('00001101-0000-1000-8000-00805f9b34fb');
-
-  } catch (error) {
-    console.error('Error connecting to Bluetooth device:', error);
-    alert('Connection failed. Please ensure you are using Google Chrome and try again.');
-  }
+function isWebBluetoothEnabled() {
+    if (!navigator.bluetooth) {
+        console.log('Web Bluetooth API is not available in this browser!');
+        stateNotAvailable.style.display = "block";
+        stateConnected.style.display = "none";
+        stateDisconnected.style.display = "none";
+        return false
+    }
+    console.log('Web Bluetooth API supported in this browser.');
+    return true
 }
 
-// Function to send command to Arduino (e.g., U, D, or S)
-async function sendCommand(command) {
-  try {
-    const encoder = new TextEncoder();
-    await btSerialPort.writeValue(encoder.encode(command));
-    console.log(`Sent command: ${command}`);
-  } catch (error) {
-    console.error('Error sending command:', error);
-  }
+function connectToDevice(){
+    console.log('Initializing Bluetooth...');
+    navigator.bluetooth.requestDevice({
+        filters: [{name: deviceName}],
+        optionalServices: [bleService]
+    })
+    .then(device => {
+        console.log('Device Selected:', device.name);
+        stateNotAvailable.style.display = "none";
+        stateConnected.style.display = "block";
+        stateDisconnected.style.display = "none";
+        device.addEventListener('gattservicedisconnected', onDisconnected);
+        return device.gatt.connect();
+    })
+    .then(gattServer =>{
+        bleServer = gattServer;
+        console.log("Connected to GATT Server");
+        return bleServer.getPrimaryService(bleService);
+    })
+    .then(service => {
+        bleServiceFound = service;
+        console.log("Service discovered:", service);
+    })
+    .catch(error => {
+        console.log('Error: ', error);
+        stateNotAvailable.style.display = "none";
+        stateConnected.style.display = "none";
+        stateDisconnected.style.display = "block";
+    })
 }
 
-upButton.onclick = function() {
-  if (stateConnected.style.display == 'none') {
-    alert('Please connect your Arduino');
-    return;
-  }
-  sendCommand('U');  // Send 'U' to move motor up
+function onDisconnected(event){
+    console.log('Device Disconnected:', event.target.device.name);
+    stateNotAvailable.style.display = "none";
+    stateConnected.style.display = "none";
+    stateDisconnected.style.display = "block";
+
+    connectToDevice();
 }
 
-downButton.onclick = function() {
-  if (stateConnected.style.display == 'none') {
-    alert('Please connect your Arduino');
-    return;
-  }
-  sendCommand('D');  // Send 'D' to move motor down
+function writeOnCharacteristic(value){
+    if (bleServer && bleServer.connected) {
+        bleServiceFound.getCharacteristic(motorCharacteristic)
+        .then(characteristic => {
+            console.log("Found the Motor characteristic: ", characteristic.uuid);
+            const data = new Uint8Array([value]);
+            return characteristic.writeValue(data);
+        })
+        .then(() => {
+            console.log("Value written to Motorcharacteristic:", value);
+        })
+        .catch(error => {
+            console.error("Error writing to the LED characteristic: ", error);
+        });
+    } else {
+        stateNotAvailable.style.display = "none";
+        stateConnected.style.display = "none";
+        stateDisconnected.style.display = "block";
+        console.error ("Bluetooth is not connected. Cannot write to characteristic.")
+        window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
+    }
 }
 
-stopButton.onclick = function() {
-  if (stateConnected.style.display == 'none') {
-    alert('Please connect your Arduino');
-    return;
-  }
-  sendCommand('S');  // Send 'S' to stop motor
+function disconnectDevice() {
+    console.log("Disconnect Device.");
+    if (bleServer && bleServer.connected) {
+        try{
+            bleServer.disconnect();
+            console.log("Device Disconnected");
+            stateNotAvailable.style.display = "none";
+            stateConnected.style.display = "none";
+            stateDisconnected.style.display = "block";
+        }
+        catch(e){
+            console.log("An error occurred:", e);
+        };
+    } else {
+        stateNotAvailable.style.display = "none";
+        stateConnected.style.display = "none";
+        stateDisconnected.style.display = "block";
+        console.error("Bluetooth is not connected.");
+        window.alert("Bluetooth is not connected.")
+    }
 }

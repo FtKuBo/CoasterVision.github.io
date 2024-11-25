@@ -44,24 +44,24 @@ h1 {
     margin-bottom: 15px;
 }
 
-#stateConnected, #stateDisconnected {
+#stateConnected, #stateDisconnected, #stateNotAvailable {
     padding: 5px 15px;
     border-radius: 5px;
     font-weight: bold;
-    color: #fff;
 }
 
 #stateConnected {
-    background-color: #4caf50;
+    color: #4caf50;
 }
 
 #stateDisconnected {
-    background-color: #f44336;
+    color: #f44336;
 }
 
-#stateConnected {
-    display: none;
+#stateNotAvailable {
+    color: #f4b536;
 }
+
 
 #connectButton {
     padding: 10px 20px;
@@ -75,6 +75,22 @@ h1 {
 }
 
 #connectButton:hover {
+    background-color: #357ab8;
+}
+
+
+#disconnectButton {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color:  #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#disconnectButton:hover {
     background-color: #357ab8;
 }
 

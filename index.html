@@ -10,12 +10,17 @@
     <h1>Coaster Vision</h1>
     
     <div class="device">
-        <h2>Device</h2>
+        <h2>STATUS</h2>
         <div class="states">
-            <span id="stateConnected" style="display: none;">Connected</span>
-            <span id="stateDisconnected">Disconnected</span>
+            <span id="stateConnected" style="display: none;">connected</span>
+            <span id="stateNotAvailable" style="display: none;">bluetooth not available</span>
+            <span id="stateDisconnected">disconnected</span>
         </div>
-        <button id="connectButton">Connect to Arduino</button>
+        <div>
+            <button id="connectButton">Connect Arduino</button>
+            <button id="disconnectButton">Disconnect Arduino</button>
+        </div>
+        
     </div>
     
     <div class="action">
