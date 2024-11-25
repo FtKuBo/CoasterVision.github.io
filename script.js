@@ -65,7 +65,7 @@ function connectToDevice(){
     })
     .catch(error => {
         console.log('Error: ', error);
-        window.alert("Connection Error: Ensure that you are using Google Chrome as your browser and that the Arduino device is properly connected and accessible.")
+        window.alert("Connection Error: Ensure that you are using Google Chrome as your browser and that the Arduino device is accessible.")
         stateNotAvailable.style.display = "none";
         stateConnected.style.display = "none";
         stateDisconnected.style.display = "block";
