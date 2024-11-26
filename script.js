@@ -7,6 +7,7 @@ const stateConnected = document.getElementById('stateConnected');
 const stateDisconnected = document.getElementById('stateDisconnected');
 const stateNotAvailable = document.getElementById('stateNotAvailable');
 
+
 //Define BLE Device Specs
 var deviceName ='ESP32';
 var bleService = '19b10000-e8f2-537e-4f6c-d104768a1214';
@@ -21,11 +22,26 @@ connectButton.addEventListener('click', (event) => {
         connectToDevice();
     }
 });
-disconnectButton.addEventListener('click', disconnectDevice);
 
-upButton.addEventListener('click', () => writeOnCharacteristic(2));
-downButton.addEventListener('click', () => writeOnCharacteristic(1));
-stopButton.addEventListener('click', () => writeOnCharacteristic(0));
+disconnectButton.addEventListener('click', (event) => {
+    if(isWebBluetoothEnabled())
+        disconnectDevice()
+});
+
+upButton.addEventListener('click', (event) => {
+    if(isWebBluetoothEnabled())
+        writeOnCharacteristic(1);
+});
+
+downButton.addEventListener('click', (event) => {
+    if(isWebBluetoothEnabled())
+        writeOnCharacteristic(0)
+});
+
+stopButton.addEventListener('click', (event) => {
+    if(isWebBluetoothEnabled())
+        writeOnCharacteristic(2)
+});
 
 function showPopup() {
     const popup = document.getElementById("popup");
@@ -71,7 +87,6 @@ function connectToDevice(){
         stateNotAvailable.style.display = "none";
         stateConnected.style.display = "block";
         stateDisconnected.style.display = "none";
-        showPopup();
     })
     .catch(error => {
         console.log('Error: ', error);
@@ -101,6 +116,7 @@ function writeOnCharacteristic(value){
         })
         .then(() => {
             console.log("Value written to Motorcharacteristic:", value);
+            showPopup();
         })
         .catch(error => {
             console.error("Error writing to the Motor characteristic: ", error);
